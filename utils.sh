@@ -193,6 +193,18 @@ function create_cluster() {
     $GOPATH/src/github.com/openshift-metalkube/kni-installer/bin/kni-install --dir "${assets_dir}" --log-level=debug create cluster
 }
 
+function generate_master_ignition() {
+    local outdir
+    local wd
+
+    outdir="$1"
+    wd=$(mktemp -d)
+
+    generate_ocp_install_config "${wd}"
+    $GOPATH/src/github.com/metalkube/kni-installer/bin/kni-install --dir "${wd}" --log-level=debug create ignition-configs
+    cp "${wd}/master.ign" "${outdir}"
+}
+
 function net_iface_dhcp_ip() {
 local netname
 local hwaddr

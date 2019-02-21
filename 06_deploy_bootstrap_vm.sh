@@ -49,4 +49,7 @@ machineconfig_generate_patches "master"
 # Apply patches to masters
 patch_node_ignition "master" "$IP"
 
+# Generate ocp/master.ign
+generate_master_ignition ocp
+
 echo "You can now ssh to \"$IP\" as the core user"
