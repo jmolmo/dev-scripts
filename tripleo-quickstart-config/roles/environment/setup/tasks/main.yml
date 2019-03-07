@@ -101,8 +101,11 @@
 #
 # [helper]: http://wiki.qemu.org/Features-Done/HelperNetworking
 - name: Whitelist bridges for unprivileged access
+  vars:
+    fedora_distribution: ansible_facts['distribution'] == "Fedora"
   lineinfile:
-    dest: '/etc/qemu-kvm/bridge.conf' # Needs to be /etc/qemu/bridge.conf if supporting Fedora
+    dest: "{{ '/etc/qemu/bridge.conf' if fedora_distribution else '/etc/qemu-kvm/bridge.conf' }}"
+    #dest: '/etc/qemu/bridge.conf' # JMO Needs to be /etc/qemu/bridge.conf if supporting Fedora. /etc/qemu-kvm/bridge.conf CentOS
     line: "allow {{ item.bridge }}"
   with_items: "{{ networks }}"
   become: true

@@ -72,6 +72,7 @@
     state: started
     enabled: true
   become: true
+  when: ansible_facts['distribution'] != "Fedora" #vbmc is not a service in Fedora (not needed this step)
 
 - name: Create the Virtual BMCs
   command: "vbmc add {{ item.name }} --port {{ item.virtualbmc_port }} --libvirt-uri {{ vbmc_libvirt_uri }}"

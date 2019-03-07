@@ -10,12 +10,20 @@ sudo sed -i "s/=enforcing/=permissive/g" /etc/selinux/config
 # Update to latest packages first
 sudo yum -y update
 
-# Install EPEL required by some packages
-sudo yum -y install epel-release --enablerepo=extras
+# get distribution name to make different things
+distribution=$(lsb_release -a | grep "Distributor" | cut -f2  | tr -d ' ')
+
+# Fedora does not need epel
+if [ $distribution != 'Fedora' ]; then
+  sudo yum -y install epel-release --enablerepo=extras
+fi
 
 # Work around a conflict with a newer zeromq from epel
-if ! grep -q zeromq /etc/yum.repos.d/epel.repo; then
-  sudo sed -i '/enabled=1/a exclude=zeromq*' /etc/yum.repos.d/epel.repo
+if [ $distribution != 'Fedora' ]; then
+  if ! grep -q zeromq /etc/yum.repos.d/epel.repo; then
+    sudo sed -i '/enabled=1/a exclude=zeromq*' /etc/yum.repos.d/epel.repo
+  fi
+  sudo yum -y update
 fi
 
 # Install required packages
@@ -81,6 +89,11 @@ sudo pip install \
   lolcat \
   yq
 
+# Aditional requeriments for Fedora
+#if [ $distribution = 'Fedora' ]; then
+#  sudo yum -y install python3-jsonpatch
+#fi
+
 # Install oc client
 oc_version=4.0.22
 oc_tools_dir=$HOME/oc-${oc_version}
@@ -104,3 +117,12 @@ if sudo [ ! -f /root/.ssh/id_rsa_virt_power ]; then
   sudo ssh-keygen -f /root/.ssh/id_rsa_virt_power -P ""
   sudo cat /root/.ssh/id_rsa_virt_power.pub | sudo tee -a /root/.ssh/authorized_keys
 fi
+
+# Install yarn and nodejs
+curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash -
+sudo yum install yarn nodejs -y
+
+# Check sshd enabled and ready to use
+sudo systemctl enable sshd
+sudo systemctl start sshd

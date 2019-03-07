@@ -49,6 +49,20 @@ server with:
 $ go run "${GOPATH}/src/github.com/openshift-metalkube/facet/main.go" server
 ```
 
+and check that it is working with:
+
+```
+#  curl -k -i -X get http://localhost:8080/api/hosts
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Thu, 07 Mar 2019 13:01:57 GMT
+Content-Length: 727
+
+{"kind":"BareMetalHostList","apiVersion":"alpha1","metadata":{"selfLink":"/api/v1/namespace/default/baremetalhosts","resourceVersion":"123456"},"items":[{"metadata":{"name":"baremetalhost","namespace":"default","uid":"some-uuid","creationTimestamp":"2019-01-22T09:30:00Z","labels":{"app":"hello-world"}},"spec":{"bmc":{"ip":"192.168.100.100","credentialsName":"bmc-creds-valid"},"online":true},"status":{"lastUpdated":"2019-03-07T13:01:57Z","hardware":{"ramGiB":128,"nics":[{"mac":"00:A0:C9:14:C8:29","ip":"192.168.100.100","speedGbps":40}],"storage":[{"sizeGiB":1024,"info":"disk info"}],"cpus":[{"type":"intel","speedGHz":3}]},"provisioningID":"some ironic ID","image":"image.qcow","goodCredentials":{},"errorMessage":""}}]}
+
+```
+
 - `./04_setup_ironic.sh`
 
 This will setup Ironic on the host server and download the resources it requires
