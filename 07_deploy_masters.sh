@@ -24,8 +24,14 @@ function wait_for_ironic_state() {
 
    NUM_IN_STATE=$(openstack baremetal node list --fields name --fields provision_state | grep master | grep $1 | wc -l || echo 0)
    while [ "$NUM_IN_STATE" != "3" ]; do
-       if openstack baremetal node list --fields name --fields provision_state | grep master | grep -e error -e failed; then
-          openstack baremetal node list
+       # Show what is happening
+       CURRENT_STATE=$(openstack baremetal node list --fields name --fields provision_state)
+       echo $CURRENT_STATE
+       if echo $CURRENT_STATE | grep master | grep -e error -e failed; then
+         # Provide an idea about what was wrong
+         for node in $(jq -r .nodes[].name $MASTER_NODES_FILE); do
+           openstack baremetal node show $node -f value -c last_error
+          done
           echo "Error detected waiting for baremetal nodes to become $1" >&2
           exit 1
        fi
@@ -55,7 +61,7 @@ for node in $(jq -r .nodes[].name $MASTER_NODES_FILE); do
   openstack baremetal node inspect $node
 done
 
-# Check for nodes manageable after introspection 
+# Check for nodes manageable after introspection
 wait_for_ironic_state "manageable"
 
 for node in $(jq -r .nodes[].name $MASTER_NODES_FILE); do
@@ -63,7 +69,7 @@ for node in $(jq -r .nodes[].name $MASTER_NODES_FILE); do
   openstack baremetal node deploy --config-drive configdrive $node
 done
 
-# Check for nodes active after deployment 
+# Check for nodes active after deployment
 wait_for_ironic_state "active"
 
 echo "Master nodes active"
