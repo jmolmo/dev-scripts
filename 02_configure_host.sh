@@ -21,7 +21,8 @@ ANSIBLE_FORCE_COLOR=true ansible-playbook \
     -e "platform=$NODES_PLATFORM" \
     -e @config/environments/dev_privileged_libvirt.yml \
     -i tripleo-quickstart-config/metalkube-inventory.ini \
-    -b -vvv tripleo-quickstart-config/metalkube-setup-playbook.yml
+    -b -vvvv tripleo-quickstart-config/metalkube-setup-playbook.yml
+
 
 # Allow local non-root-user access to libvirt
 sudo usermod -a -G "libvirt" $USER
@@ -79,7 +80,7 @@ fi
 
 # Internal interface
 if [ "$INT_IF" ]; then
-  sudo ip link set "$INT_IF" master baremetal 
+  sudo ip link set "$INT_IF" master baremetal
 fi
 
 # Switch NetworkManager to internal DNS

@@ -6,11 +6,14 @@ name="$1"
 distribution=$(lsb_release -a | grep "Distributor" | cut -f2  | tr -d ' ')
 
 if [ $distribution != 'Fedora' ]; then
-  status=$(sudo vbmc show  -f value $name | grep status | cut -f2 -d' ')
+  status_cmd="sudo vbmc show  -f value $name | grep status | cut -f2 -d' '"
 else
-  status=$(sudo vbmc show  $name | grep status | cut -f3 -d'|' | tr -d ' ')
+  status_cmd="sudo vbmc show  $name | grep status | cut -f3 -d'|' | tr -d ' '"
 fi
 
-if [[ $status != "running" ]]; then
-    vbmc start $name
-fi
+while [ $(eval "$status_cmd") != "running" ]; do
+  echo "Waiting for $name vbmc 'running' status"
+  sleep 3
+done
+
+vbmc start $name

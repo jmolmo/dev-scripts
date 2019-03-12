@@ -234,7 +234,8 @@ tuned_profile: 'virtual-host'
 non_root_group: "{{ non_root_user }}"
 
 # Path for volume storage
-libvirt_volume_path: "{{ working_dir }}/pool"
+# libvirt_volume_path: "{{ working_dir }}/pool"
+libvirt_volume_path: "/home/ocp4_images"
 
 libvirt_uri: qemu:///session
 

@@ -26,7 +26,6 @@ function wait_for_ironic_state() {
    while [ "$NUM_IN_STATE" != "3" ]; do
        # Show what is happening
        CURRENT_STATE=$(openstack baremetal node list --fields name --fields provision_state)
-       echo $CURRENT_STATE
        if echo $CURRENT_STATE | grep master | grep -e error -e failed; then
          # Provide an idea about what was wrong
          for node in $(jq -r .nodes[].name $MASTER_NODES_FILE); do
