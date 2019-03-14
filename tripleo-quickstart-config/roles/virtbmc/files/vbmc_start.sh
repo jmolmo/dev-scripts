@@ -16,4 +16,4 @@ while [ $(eval "$status_cmd") != "running" ]; do
   sleep 3
 done
 
-vbmc start $name
+sudo vbmc start $name
