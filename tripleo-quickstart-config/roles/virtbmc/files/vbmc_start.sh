@@ -11,9 +11,9 @@ else
   status_cmd="sudo vbmc show  $name | grep status | cut -f3 -d'|' | tr -d ' '"
 fi
 
-while [ $(eval "$status_cmd") != "running" ]; do
-  echo "Waiting for $name vbmc 'running' status"
-  sleep 3
-done
-
 sudo vbmc start $name
+
+#while [ $(eval "$status_cmd") != "running" ]; do
+#  echo "Waiting for $name vbmc 'running' status"
+#  sleep 3
+#done

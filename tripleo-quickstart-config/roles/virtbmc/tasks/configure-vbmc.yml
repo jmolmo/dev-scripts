@@ -66,7 +66,7 @@
     use: yum
   become: true
 
-- name: Start the Virtual BMCs (virtualbmc >= 1.4.0+)
+- name: Start the Virtual BMCs Service (virtualbmc >= 1.4.0+)
   service:
     name: "virtualbmc"
     state: started
@@ -81,7 +81,12 @@
   with_items: "{{ overcloud_nodes }}"
   become: true
 
+#- name: Start the Virtual BMCs
+#  script: vbmc_start.sh {{ item.name }}
+#  with_items: "{{ overcloud_nodes }}"
+#  become: true
+
 - name: Start the Virtual BMCs
-  script: vbmc_start.sh {{ item.name }}
+  command: vbmc start {{ item.name }}
   with_items: "{{ overcloud_nodes }}"
   become: true
