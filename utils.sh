@@ -201,7 +201,7 @@ function generate_master_ignition() {
     wd=$(mktemp -d)
 
     generate_ocp_install_config "${wd}"
-    $GOPATH/src/github.com/metalkube/kni-installer/bin/kni-install --dir "${wd}" --log-level=debug create ignition-configs
+    $GOPATH/src/github.com/openshift-metalkube/kni-installer/bin/kni-install --dir "${wd}" --log-level=debug create ignition-configs
     cp "${wd}/master.ign" "${outdir}"
 }
 

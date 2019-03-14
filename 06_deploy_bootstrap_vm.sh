@@ -42,7 +42,7 @@ $SSH -o ConnectionAttempts=500 core@$IP id
 jq '.nodes[0:3] | {nodes: .}' "${NODES_FILE}" | tee "${MASTER_NODES_FILE}"
 
 # Fix etcd discovery on bootstrap
-add_if_name_to_etcd_discovery "$IP" "eth1"
+# add_if_name_to_etcd_discovery "$IP" "eth1"
 
 # Generate "dynamic" ignition patches
 machineconfig_generate_patches "master"
